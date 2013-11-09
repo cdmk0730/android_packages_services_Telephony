@@ -2758,10 +2758,10 @@ public class PhoneUtils {
             return getPrefs(context).getBoolean("button_vibrate_45", false);
         }
         static boolean vibHangup(Context context) {
-            return getPrefs(context).getBoolean("button_vibrate_hangup", false);
+            return getPrefs(context).getBoolean("button_vibrate_hangup", true);
         }
         static boolean vibOutgoing(Context context) {
-            return getPrefs(context).getBoolean("button_vibrate_outgoing", false);
+            return getPrefs(context).getBoolean("button_vibrate_outgoing", true);
         }
         static boolean vibCallWaiting(Context context) {
             return getPrefs(context).getBoolean("button_vibrate_call_waiting", false);

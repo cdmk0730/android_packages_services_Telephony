@@ -42,6 +42,7 @@
       <CheckBoxPreference
           android:key="button_vibrate_outgoing"
           android:title="@string/vibrate_outgoing"
+          android:defaultValue="true"
           android:persistent="true" />
 
       <CheckBoxPreference
@@ -52,6 +53,7 @@
       <CheckBoxPreference
           android:key="button_vibrate_hangup"
           android:title="@string/vibrate_hangup"
+          android:defaultValue="true"
           android:persistent="true" />
 
       <CheckBoxPreference

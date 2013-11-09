@@ -51,4 +51,13 @@
         android:entryValues="@array/enabled_networks_values"
         android:dialogTitle="@string/preferred_network_mode_dialogtitle" />
 
+    <com.android.phone.CustomSMSCSettingPreference            
+        android:key="button_smsc_number_key"
+        android:title="@string/smsc_settings_title"
+        android:persistent="false"
+        android:summary="@string/smsc_settings_summary"
+        android:dialogTitle="@string/smsc_settings_title"
+        android:positiveButtonText="@null"
+        android:negativeButtonText="@null" />
+
 </PreferenceScreen>

@@ -70,6 +70,7 @@ public class MobileNetworkSettings extends PreferenceActivity
     private static final String BUTTON_ROAMING_KEY = "button_roaming_key";
     private static final String BUTTON_CDMA_LTE_DATA_SERVICE_KEY = "cdma_lte_data_service_key";
     private static final String BUTTON_ENABLED_NETWORKS_KEY = "enabled_networks_key";
+    private static final String BUTTON_SMSC_NUMBER_KEY = "button_smsc_number_key";
 
     static final int preferredNetworkMode = Phone.PREFERRED_NT_MODE;
 
@@ -84,6 +85,7 @@ public class MobileNetworkSettings extends PreferenceActivity
     private CheckBoxPreference mButtonDataRoam;
     private CheckBoxPreference mButtonDataEnabled;
     private Preference mLteDataServicePref;
+    private Preference mSMSCNumber;
 
     private static final String iface = "rmnet0"; //TODO: this will go away
 
@@ -198,6 +200,8 @@ public class MobileNetworkSettings extends PreferenceActivity
                     preferredNetworkMode);
             mButtonEnabledNetworks.setValue(Integer.toString(settingsNetworkMode));
             return true;
+        } else if (preference == mSMSCNumber) {
+            return true;
         } else {
             // if the button is anything but the simple toggle preference,
             // we'll need to disable all preferences to reject all click
@@ -307,6 +311,8 @@ public class MobileNetworkSettings extends PreferenceActivity
             if (DBG) log("settingsNetworkMode: " + settingsNetworkMode);
             mButtonEnabledNetworks.setValue(Integer.toString(settingsNetworkMode));
         }
+
+        mSMSCNumber = getPreferenceScreen().findPreference(BUTTON_SMSC_NUMBER_KEY);
 
         final boolean missingDataServiceUrl = TextUtils.isEmpty(
                 android.provider.Settings.Global.getString(getContentResolver(),

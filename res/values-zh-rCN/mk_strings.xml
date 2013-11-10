@@ -16,6 +16,9 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- IP Call -->
+    <string name="dialer_ipcall_settings_title">IP拨号</string>
+
     <!-- SMSC-->
     <string name="smsc_settings_title">信息服务中心</string>
     <string name="smsc_settings_summary">设置和获得信息服务中心号码</string>

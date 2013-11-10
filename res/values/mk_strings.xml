@@ -16,6 +16,9 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- IP Call -->
+    <string name="dialer_ipcall_settings_title">IP Call</string>
+
     <!-- SMSC-->
     <string name="smsc_settings_title">SMSC Settings</string>
     <string name="smsc_settings_sumary">Set and get the smsc number</string>

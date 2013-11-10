@@ -104,7 +104,7 @@ public class CustomSMSCSettingPreference extends DialogPreference {
 			@Override
 			public void onClick(View arg0) {
 				mPhone.setSmscAddress(etSMSC.getText().toString(),
-				mHandler.obtainMessage(EVENT_UPDATE_SMSC_DONE));
+						mHandler.obtainMessage(EVENT_UPDATE_SMSC_DONE));
 			}
 		});
 		layoutSMSCButton.addView(btnUpdate);
@@ -134,6 +134,7 @@ public class CustomSMSCSettingPreference extends DialogPreference {
 			default:
 				break;
 			}
+			etSMSC.setSelection(etSMSC.getText().length());
 		}
 	};
 

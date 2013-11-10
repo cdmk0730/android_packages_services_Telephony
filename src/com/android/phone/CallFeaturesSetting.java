@@ -1530,6 +1530,7 @@ public class CallFeaturesSetting extends PreferenceActivity
         mRingtonePreference = findPreference(BUTTON_RINGTONE_KEY);
         mVibrateWhenRinging = (CheckBoxPreference) findPreference(BUTTON_VIBRATE_ON_RING);
         mPlayDtmfTone = (CheckBoxPreference) findPreference(BUTTON_PLAY_DTMF_TONE);
+        mDirectCall = (CheckBoxPreference) findPreference(BUTTON_DIRECT_CALL);
         mButtonDTMF = (ListPreference) findPreference(BUTTON_DTMF_KEY);
         mButtonAutoRetry = (CheckBoxPreference) findPreference(BUTTON_RETRY_KEY);
         mButtonHAC = (CheckBoxPreference) findPreference(BUTTON_HAC_KEY);
@@ -1560,6 +1561,11 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (mPlayDtmfTone != null) {
             mPlayDtmfTone.setChecked(Settings.System.getInt(contentResolver,
                     Settings.System.DTMF_TONE_WHEN_DIALING, 1) != 0);
+        }
+
+        if (mDirectCall != null) {
+            mDirectCall.setChecked(Settings.System.getInt(contentResolver,
+                    Settings.System.DIALER_DIRECT_CALL, 0) != 0);
         }
 
         if (mButtonDTMF != null) {

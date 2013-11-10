@@ -16,6 +16,10 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- Direct Call -->
+    <string name="direct_call_title">Direct call</string>
+    <string name="direct_call_summary">Lift phone to ear after entering number in dialer to call directly</string>
+
     <!-- IP Call -->
     <string name="dialer_ipcall_settings_title">IP Call</string>
 

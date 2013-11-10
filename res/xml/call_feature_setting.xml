@@ -99,6 +99,12 @@
           android:targetClass="com.android.dialer.preference.IPCallPreferenceActivity" />
   </PreferenceScreen>
 
+  <CheckBoxPreference
+      android:key="button_direct_call"
+      android:title="@string/direct_call_title"
+      android:summary="@string/direct_call_summary"
+      android:persistent="false" />
+
   <PreferenceScreen
       android:key="button_voicemail_category_key"
       android:title="@string/voicemail"

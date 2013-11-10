@@ -179,6 +179,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private static final String BUTTON_RINGTONE_KEY    = "button_ringtone_key";
     private static final String BUTTON_VIBRATE_ON_RING = "button_vibrate_on_ring";
     private static final String BUTTON_PLAY_DTMF_TONE  = "button_play_dtmf_tone";
+    private static final String BUTTON_DIRECT_CALL     = "button_direct_call";
     private static final String BUTTON_DTMF_KEY        = "button_dtmf_settings";
     private static final String BUTTON_RETRY_KEY       = "button_auto_retry_key";
     private static final String BUTTON_TTY_KEY         = "button_tty_mode_key";
@@ -273,6 +274,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private CheckBoxPreference mVibrateWhenRinging;
     /** Whether dialpad plays DTMF tone or not. */
     private CheckBoxPreference mPlayDtmfTone;
+    private CheckBoxPreference mDirectCall;
     private CheckBoxPreference mButtonAutoRetry;
     private CheckBoxPreference mButtonHAC;
     private ListPreference mButtonDTMF;
@@ -491,6 +493,9 @@ public class CallFeaturesSetting extends PreferenceActivity
         } else if (preference == mPlayDtmfTone) {
             Settings.System.putInt(getContentResolver(), Settings.System.DTMF_TONE_WHEN_DIALING,
                     mPlayDtmfTone.isChecked() ? 1 : 0);
+        } else if (preference == mDirectCall) {
+            Settings.System.putInt(getContentResolver(), Settings.System.DIALER_DIRECT_CALL,
+                    mDirectCall.isChecked() ? 1 : 0);
         } else if (preference == mButtonDTMF) {
             return true;
         } else if (preference == mButtonTTY) {

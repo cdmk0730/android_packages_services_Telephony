@@ -16,6 +16,10 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- Direct Call -->
+    <string name="direct_call_title">体感拨号</string>
+    <string name="direct_call_summary">手机放在耳边时将拨打当前拨号器输入的电话号码</string>
+
     <!-- IP Call -->
     <string name="dialer_ipcall_settings_title">IP拨号</string>
 

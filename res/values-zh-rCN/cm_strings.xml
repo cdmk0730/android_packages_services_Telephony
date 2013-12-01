@@ -29,7 +29,7 @@
     <!-- Toast text for MO calls, when incoming calls are barred at remote party -->
     <string name="call_notif_incoming_barred">来电被对方禁止</string>
     <!-- Toast text for MO calls when CLIR Suppression is rejected -->
-    <string name="call_notif_clir_suppression_rejected">Own number suppression rejected by network</string>
+    <string name="call_notif_clir_suppression_rejected">自我号码抑制被网络拒绝</string>
     <!-- In-call screen: status label when MO call gets deflected to another party -->
     <string name="call_notif_call_deflected">呼叫被对方转接</string>
     <!-- Toast text for incoming call being forwarded to other remote party  -->
@@ -46,14 +46,14 @@
     <string name="call_notif_callconnectedect">呼叫已通过显式呼叫转移连接</string>
 
     <!-- Advanced Settings -->
-    <string name="incall_call_type_label_forwarded">转接通话</string>
-    <string name="noise_suppression_title">噪声抑制</string>
+    <string name="incall_vibration">通话震动</string>
+    <string name="vibrate_outgoing">对方接听时震动</string>
     <string name="vibrate_call_waiting">呼叫等待时震动</string>
     <string name="vibrate_hangup">通话结束时震动</string>
     <string name="vibrate_45">每分钟震动</string>
     <string name="vibrate_45_sum">呼出通话到达每分钟的 45 秒时震动</string>
-    <string name="flip_action_title">翻转行为</string>
-    <string name="flip_action_dialog_title">翻转设备将\u2026</string>
+    <string name="show_ssn_label">事件提醒</string>
+    <string name="show_ssn_summary">为通话处理相关的各种网络事件显示一个通知</string>
 
     <!-- Blacklist preferences -->
     <string name="blacklist_title">黑名单</string>

@@ -31,4 +31,21 @@
     <string name="smsc_refresh">刷新</string>
     <string name="smsc_update">更新</string>
 
+    <!-- Setting title for the flip action setting. -->
+    <string name="flip_action_title">翻转行为</string>
+
+    <!-- Dialog title of the flip action setting. -->
+    <string name="flip_action_dialog_title">翻转设备将\u2026</string>
+
+    <!-- Setting summary for the flip action setting. -->
+    <string name="flip_action_summary">翻转设备将<xliff:g id="action">%s</xliff:g></string>
+
+    <!-- Values for flip action array entries -->
+    <string name="entry_do_nothing">不产生任何作用</string>
+    <string name="entry_mute_ringer">停止响铃</string>
+    <string name="entry_dismiss_call">拒绝来电</string>
+    <string name="summary_do_nothing">不产生任何作用</string>
+    <string name="summary_mute_ringer">停止响铃</string>
+    <string name="summary_dismiss_call">拒绝来电</string>
+
 </resources>

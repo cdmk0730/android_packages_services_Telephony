@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
  * Blacklist - Copyright (C) 2013 The CyanogenMod Project
+ * Direct Call - Copyright (C) 2014 The MoKee OpenSource Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -619,6 +620,7 @@ public class CallFeaturesSetting extends PreferenceActivity
             handleSipCallOptionsChange(objValue);
         } else if (preference == mFlipAction) {
             updateFlipActionSummary((String) objValue);
+            Settings.System.putInt(getContentResolver(), Settings.System.FLIP_ACTION_KEY, Integer.parseInt((String) objValue));
         }
         // always let the preference setting proceed.
         return true;
@@ -629,8 +631,6 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (mFlipAction != null) {
             String[] summaries = getResources().getStringArray(R.array.flip_action_summary_entries);
             mFlipAction.setSummary(getString(R.string.flip_action_summary, summaries[i]));
-            Settings.System.putInt(getContentResolver(), Settings.System.FLIP_ACTION_KEY,
-                    i);
         }
     }
 
@@ -1650,7 +1650,7 @@ public class CallFeaturesSetting extends PreferenceActivity
             mFlipAction.setOnPreferenceChangeListener(this);
             int flipAction = Settings.System.getInt(getContentResolver(),
                     Settings.System.FLIP_ACTION_KEY, 0);
-            mFlipAction.setDefaultValue(String.valueOf(flipAction));
+            mFlipAction.setValue(String.valueOf(flipAction));
         }
 
         if (!getResources().getBoolean(R.bool.world_phone)) {

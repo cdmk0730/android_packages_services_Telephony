@@ -183,6 +183,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private static final String BUTTON_VIBRATE_ON_RING = "button_vibrate_on_ring";
     private static final String BUTTON_PLAY_DTMF_TONE  = "button_play_dtmf_tone";
     private static final String BUTTON_DIRECT_CALL     = "button_direct_call";
+    private static final String BUTTON_NON_INTRUSIVE_INCALL = "button_non_intrusive_incall";
     private static final String BUTTON_DTMF_KEY        = "button_dtmf_settings";
     private static final String BUTTON_RETRY_KEY       = "button_auto_retry_key";
     private static final String BUTTON_TTY_KEY         = "button_tty_mode_key";
@@ -279,6 +280,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     /** Whether dialpad plays DTMF tone or not. */
     private CheckBoxPreference mPlayDtmfTone;
     private CheckBoxPreference mDirectCall;
+    private CheckBoxPreference mNonIntrusiveIncall;
     private CheckBoxPreference mButtonAutoRetry;
     private CheckBoxPreference mButtonHAC;
     private ListPreference mButtonDTMF;
@@ -505,6 +507,9 @@ public class CallFeaturesSetting extends PreferenceActivity
         } else if (preference == mDirectCall) {
             Settings.System.putInt(getContentResolver(), Settings.System.DIALER_DIRECT_CALL,
                     mDirectCall.isChecked() ? 1 : 0);
+        } else if (preference == mNonIntrusiveIncall) {
+            Settings.System.putInt(getContentResolver(), Settings.System.NON_INTRUSIVE_INCALL,
+                    mNonIntrusiveIncall.isChecked() ? 1 : 0);
         } else if (preference == mMwiNotification) {
             int mwi_notification = mMwiNotification.isChecked() ? 1 : 0;
             Settings.System.putInt(mPhone.getContext().getContentResolver(),
@@ -1564,6 +1569,7 @@ public class CallFeaturesSetting extends PreferenceActivity
 
         mRingtonePreference = findPreference(BUTTON_RINGTONE_KEY);
         mDirectCall = (CheckBoxPreference) findPreference(BUTTON_DIRECT_CALL);
+        mNonIntrusiveIncall = (CheckBoxPreference) findPreference(BUTTON_NON_INTRUSIVE_INCALL);
         mVibrateWhenRinging = (CheckBoxPreference) findPreference(BUTTON_VIBRATE_ON_RING);
         mPlayDtmfTone = (CheckBoxPreference) findPreference(BUTTON_PLAY_DTMF_TONE);
         mMwiNotification = (CheckBoxPreference) findPreference(BUTTON_MWI_NOTIFICATION_KEY);
@@ -1617,7 +1623,10 @@ public class CallFeaturesSetting extends PreferenceActivity
             mDirectCall.setChecked(Settings.System.getInt(contentResolver,
                     Settings.System.DIALER_DIRECT_CALL, 0) != 0);
         }
-
+        if (mNonIntrusiveIncall != null) {
+            mNonIntrusiveIncall.setChecked(Settings.System.getInt(contentResolver,
+                    Settings.System.NON_INTRUSIVE_INCALL, 1) != 0);
+        }
         if (mButtonDTMF != null) {
             if (getResources().getBoolean(R.bool.dtmf_type_enabled)) {
                 mButtonDTMF.setOnPreferenceChangeListener(this);

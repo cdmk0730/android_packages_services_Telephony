@@ -48,4 +48,8 @@
     <string name="summary_mute_ringer">mute the ringer</string>
     <string name="summary_dismiss_call">dismiss the call</string>
 
+    <!-- Non intrusive -->
+    <string name="non_intrusive_incall_title">Non intrusive</string>
+    <string name="non_intrusive_incall_summary">Use non intrusive dialog for incoming calls</string>
+
 </resources>

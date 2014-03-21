@@ -58,4 +58,15 @@
     <string name="phone_number_summary">设定电话号码</string>
     <string name="noise_suppression_title">噪音抑制</string>
     <string name="noise_suppression_summary">启用噪音抑制</string>
+    <string name="number_lookup">电话号码查询</string>
+    <string name="enable_forward_lookup_title">正向搜索</string>
+    <string name="enable_forward_lookup_summary">在拨号器搜索时显示附近的地方</string>
+    <string name="enable_people_lookup_title">人名搜索</string>
+    <string name="enable_people_lookup_summary">在拨号器搜索时显示网上的人名信息</string>
+    <string name="enable_reverse_lookup_title">反向搜索</string>
+    <string name="enable_reverse_lookup_summary">搜索有关的人名或未知号码的相关信息</string>
+    <string name="choose_lookup_providers">选择查询供应商</string>
+    <string name="choose_forward_lookup_provider_title">选择正向搜索供应商</string>
+    <string name="choose_people_lookup_provider_title">选择人名搜索供应商</string>
+    <string name="choose_reverse_lookup_provider_title">选择反向搜索提供商</string>
 </resources>

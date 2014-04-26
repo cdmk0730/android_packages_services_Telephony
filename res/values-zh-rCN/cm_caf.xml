@@ -35,6 +35,7 @@
   <string name="network_settings_sel_sub">订阅设置</string>
   <string name="network_manage_settings">网络设置</string>
   <string name="title_data_settings">数据设置</string>
+  <string name="summary_manage_subscriptions">"管理每个订阅的网络设置"</string>
   <string name="xdivert_title">X-Divert</string>
   <string name="phone_numbers">输入电话号码</string>
   <string name="proceed">继续</string>

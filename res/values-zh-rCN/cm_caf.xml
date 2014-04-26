@@ -47,6 +47,13 @@
   <string name="xdivert_not_active">未激活</string>
   <string name="managed_roaming_dialog_ok_button">是</string>
   <string name="managed_roaming_dialog_cancel_button">否</string>
+  <string name="ims_edit_title">"IMS 帐户详情"</string>
+  <string name="ims_accounts_title">"IMS 帐户"</string>
+  <string name="ims_domain_address_title">"IMS 服务器"</string>
+  <string name="mo_call_type_title">"MO 呼叫类型"</string>
+  <string name="ims_service_capability">"启用/禁用服务功能"</string>
+  <string name="ims_service_capability_title">"IMS 服务功能"</string>
+  <string name="use_ims_default_summary">"使用 IMS 进行所有语音通话"</string>
   <string name="ims_menu_save">保存</string>
   <string name="ims_menu_discard">取消</string>
   <string name="remove_ims_account">删除帐户</string>

@@ -45,8 +45,6 @@
   <string name="xdivert_status">X-Divert 状态</string>
   <string name="xdivert_active">激活</string>
   <string name="xdivert_not_active">未激活</string>
-  <string name="managed_roaming_dialog_ok_button">是</string>
-  <string name="managed_roaming_dialog_cancel_button">否</string>
   <string name="ims_edit_title">"IMS 帐户详情"</string>
   <string name="ims_accounts_title">"IMS 帐户"</string>
   <string name="ims_domain_address_title">"IMS 服务器"</string>

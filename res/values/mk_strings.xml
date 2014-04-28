@@ -25,7 +25,7 @@
 
     <!-- SMSC-->
     <string name="smsc_settings_title">SMSC Settings</string>
-    <string name="smsc_settings_sumary">Set and get the smsc number</string>
+    <string name="smsc_settings_summary">Set and get the smsc number</string>
     <string name="show_smscnum">Show SMSC number</string>
     <string name="smsc_number_invalid">SMSC number is invalid</string>
     <string name="smsc_refresh">refresh</string>

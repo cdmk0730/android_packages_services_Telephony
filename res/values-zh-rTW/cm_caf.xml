@@ -15,7 +15,23 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-  <string name="prompt">詢問</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="label_cdp">SIM 卡 (企業) 解鎖 PIN 碼</string>
+  <string name="label_spdp">SIM 卡 (服務供應商) 解鎖 PIN 碼</string>
+  <string name="label_rn1dp">RUIM 網路 1 解鎖 PIN 碼</string>
+  <string name="label_rn2dp">RUIM 網路 2 解鎖 PIN 碼</string>
+  <string name="label_puk">輸入 PUK 碼</string>
+  <string name="mobile_network_setting">行動網路設定</string>
+  <string name="phone_numbers">請輸入電話號碼</string>
+  <string name="sum_xdivert_enabled">X-Divert 已啓用</string>
+  <string name="sum_xdivert_disabled">X-Divert 已停用</string>
+  <string name="ims_service_capability">啟用 / 停用 服務效能</string>
+  <string name="ims_menu_save">儲存</string>
+  <string name="addSimEntries">新增 SIM 卡聯絡人</string>
+  <string name="editContact">編輯</string>
+  <string name="sendSms">傳送簡訊</string>
   <string name="delete">刪除</string>
+  <string name="dial">撥號</string>
+  <string name="contactAddSuccess">成功新增聯絡人到 SIM 卡</string>
+  <string name="set_subscription">選擇訂閱</string>
 </resources>

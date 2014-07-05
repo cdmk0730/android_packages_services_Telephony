@@ -142,6 +142,8 @@ public class PhoneUtils {
     /** Noise suppression status as selected by user */
     private static boolean sIsNoiseSuppressionEnabled = true;
 
+    private static boolean ignoreCallState = false;
+
     private static class FgRingCalls {
         private Call fgCall;
         private Call ringing;
@@ -3632,5 +3634,13 @@ public class PhoneUtils {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    public static void setIgnoreCallState(boolean ignored) {
+        ignoreCallState = ignored;
+    }
+
+    public static boolean getIgnoreCallState() {
+        return ignoreCallState;
     }
 }

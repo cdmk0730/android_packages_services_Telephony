@@ -144,4 +144,14 @@ interface ICallCommandService {
      * However retains the LCH state of the subscription.
      */
     void setActiveSubRetainLch(int subscriptionId);
+
+    /**
+     * Ignore a ringing call.
+     */
+    void setIgnoreCallState(boolean ignored);
+
+    /**
+     * get Ignore a ringing call state.
+     */
+    boolean getIgnoreCallState();
 }

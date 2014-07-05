@@ -376,4 +376,14 @@ class CallCommandService extends ICallCommandService.Stub {
             Log.e(TAG, "Error during setActiveSubRetainLch.", e);
         }
     }
+
+    @Override
+    public void setIgnoreCallState(boolean ignored) {
+        PhoneUtils.setIgnoreCallState(ignored);
+    }
+
+    @Override
+    public boolean getIgnoreCallState() {
+        return PhoneUtils.getIgnoreCallState();
+    }
 }

@@ -1273,4 +1273,9 @@ public class PhoneInterfaceManager extends ITelephony.Stub implements CallModele
     public void onSuppServiceFailed(int service) {
         // no-op
     }
+
+    @Override
+    public boolean getIgnoreCallState() {
+        return PhoneUtils.getIgnoreCallState();
+    }
 }

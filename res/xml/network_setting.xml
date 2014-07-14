@@ -60,15 +60,4 @@
         android:positiveButtonText="@null"
         android:negativeButtonText="@null" />
 
-    <PreferenceScreen
-        android:key="button_apn_key"
-        android:title="@string/apn_settings"
-        android:persistent="false">
-
-        <intent android:action="android.intent.action.MAIN"
-            android:targetPackage="com.android.settings"
-            android:targetClass="com.android.settings.Settings$ApnSettingsActivity" />
-
-    </PreferenceScreen>
-
 </PreferenceScreen>

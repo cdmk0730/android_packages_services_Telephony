@@ -52,4 +52,8 @@
     <string name="non_intrusive_incall_title">非侵入式来电</string>
     <string name="non_intrusive_incall_summary">使用非侵入式提示代替全屏来电界面</string>
 
+    <!-- InCall Proximity Sensor -->
+    <string name="incall_proximity_sensor_title">禁用距离传感器</string>
+    <string name="incall_proximity_sensor_summary">通话时强制打开屏幕，解决距离传感器故障时手机无法点亮问题。</string>
+
 </resources>

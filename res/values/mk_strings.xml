@@ -52,8 +52,4 @@
     <string name="non_intrusive_incall_title">Non intrusive</string>
     <string name="non_intrusive_incall_summary">Use non intrusive dialog for incoming calls</string>
 
-    <!-- InCall Proximity Sensor -->
-    <string name="incall_proximity_sensor_title">Disable proximity sensor</string>
-    <string name="incall_proximity_sensor_summary">This will force phone to turn on the screen when calling.</string>
-
 </resources>

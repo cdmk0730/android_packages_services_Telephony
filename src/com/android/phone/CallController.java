@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemProperties;
-import android.provider.Settings;
 import android.provider.CallLog.Calls;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.PhoneNumberUtils;
@@ -41,7 +40,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import static com.android.internal.telephony.MSimConstants.SUBSCRIPTION_KEY;
-import static com.android.internal.telephony.PhoneConstants.IP_CALL;
 
 /**
  * Phone app module in charge of "call control".
@@ -221,17 +219,11 @@ public class CallController extends Handler {
 
         String scheme = uri.getScheme();
         String number = PhoneNumberUtils.getNumberFromIntent(intent, mApp);
-        if (DBG) {
+        if (VDBG) {
             log("- action: " + action);
             log("- uri: " + uri);
             log("- scheme: " + scheme);
             log("- number: " + number);
-            log("- ipcall: " + intent.getBooleanExtra(IP_CALL, false));
-            int subscription = intent.getIntExtra(SUBSCRIPTION_KEY,0);
-            log("- subscription: " + subscription);
-            log("- ipprefix: "
-                    + Settings.System.getString(mApp.getContentResolver(),
-                            Constants.SETTINGS_IP_PREFIX + (subscription + 1)));
         }
 
         // This method should only be used with the various flavors of CALL

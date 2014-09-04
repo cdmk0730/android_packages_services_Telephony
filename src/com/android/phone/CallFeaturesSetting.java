@@ -330,6 +330,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private CheckBoxPreference mDirectCall;
     private CheckBoxPreference mNonIntrusiveIncall;
     private CheckBoxPreference mDisableIncallProximitySensor;
+    private ListPreference mFlipAction;
     private CheckBoxPreference mButtonAutoRetry;
     private CheckBoxPreference mButtonHAC;
     private ListPreference mButtonDTMF;
@@ -344,7 +345,6 @@ public class CallFeaturesSetting extends PreferenceActivity
     private CheckBoxPreference mVoicemailNotificationVibrate;
     private SipSharedPreferences mSipSharedPreferences;
     private PreferenceScreen mButtonBlacklist;
-    private ListPreference mFlipAction;
     private CheckBoxPreference mEnableForwardLookup;
     private CheckBoxPreference mEnablePeopleLookup;
     private CheckBoxPreference mEnableReverseLookup;
@@ -1644,6 +1644,7 @@ public class CallFeaturesSetting extends PreferenceActivity
 
         mDirectCall = (CheckBoxPreference) findPreference(BUTTON_DIRECT_CALL);
         mNonIntrusiveIncall = (CheckBoxPreference) findPreference(BUTTON_NON_INTRUSIVE_INCALL);
+        mFlipAction = (ListPreference) findPreference(FLIP_ACTION_KEY);
 
         mPlayDtmfTone = (CheckBoxPreference) findPreference(BUTTON_PLAY_DTMF_TONE);
 
@@ -1661,9 +1662,6 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (mT9SearchInputLocale != null) {
             initT9SearchInputPreferenceList();
         }
-
-        mFlipAction = (ListPreference) findPreference(FLIP_ACTION_KEY);
-
 
         final ContentResolver contentResolver = getContentResolver();
 
@@ -1692,6 +1690,13 @@ public class CallFeaturesSetting extends PreferenceActivity
                 mDisableIncallProximitySensor.setChecked(Settings.System.getInt(contentResolver,
                     Settings.System.INCALL_PROXIMITY_SENSOR_DISABLED, 0) != 0);
             }
+        }
+
+        if (mFlipAction != null) {
+            mFlipAction.setOnPreferenceChangeListener(this);
+            int flipAction = Settings.System.getInt(getContentResolver(),
+                    Settings.System.FLIP_ACTION_KEY, 0);
+            mFlipAction.setValue(String.valueOf(flipAction));
         }
 
         if (mButtonDTMF != null) {
@@ -1727,13 +1732,6 @@ public class CallFeaturesSetting extends PreferenceActivity
                 prefSet.removePreference(mButtonNoiseSuppression);
                 mButtonNoiseSuppression = null;
             }
-        }
-
-        if (mFlipAction != null) {
-            mFlipAction.setOnPreferenceChangeListener(this);
-            int flipAction = Settings.System.getInt(getContentResolver(),
-                    Settings.System.FLIP_ACTION_KEY, 0);
-            mFlipAction.setValue(String.valueOf(flipAction));
         }
 
         if (mT9SearchInputLocale != null) {

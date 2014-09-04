@@ -2625,11 +2625,6 @@ public class CallFeaturesSetting extends PreferenceActivity
             preferenceScreen.removePreference(mButtonProximity);
             mButtonProximity = null;
         }
-        if (!getResources().getBoolean(R.bool.config_ip_prefix_enable) &&
-                mIPPrefix != null) {
-            preferenceScreen.removePreference(mIPPrefix);
-            mIPPrefix = null;
-        }
         if (!getResources().getBoolean(R.bool.world_phone)) {
             Preference options = preferenceScreen.findPreference(BUTTON_CDMA_OPTIONS);
             if (options != null)

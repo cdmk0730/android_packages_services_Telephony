@@ -195,8 +195,8 @@
     <bool name="config_disconnect_other_fgcall">false</bool>
 
     <!-- Flag whether to enable Proximity setting-->
-    <bool name="config_proximity_enable" translatable="false">false</bool>
+    <bool name="config_proximity_enable" translatable="false">true</bool>
 
     <!-- Flag whether to enable IP Prefix setting-->
-    <bool name="config_ip_prefix_enable" translatable="false">false</bool>
+    <bool name="config_ip_prefix_enable" translatable="false">true</bool>
 </resources>

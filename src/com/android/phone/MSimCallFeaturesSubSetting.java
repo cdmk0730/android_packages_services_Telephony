@@ -68,6 +68,7 @@ public class MSimCallFeaturesSubSetting extends CallFeaturesSetting {
     private static final String BUTTON_RINGTONE_CATEGORY_KEY = "button_ringtone_category_key";
     private static final String BUTTON_CF_EXPAND_KEY = "button_cf_expand_key";
     private static final String BUTTON_MORE_EXPAND_KEY = "button_more_expand_key";
+    private static final String BUTTON_IPPREFIX_KEY = "button_ipprefix_key";
     private static final String BUTTON_CB_EXPAND_KEY = "button_callbarring_expand_key";
 
     private PreferenceScreen mSubscriptionPrefFDN;
@@ -75,6 +76,7 @@ public class MSimCallFeaturesSubSetting extends CallFeaturesSetting {
     private PreferenceScreen mSubscriptionPrefCDMA;
     private PreferenceScreen mSubscriptionPrefEXPAND;
     private PreferenceScreen mSubscriptionPrefMOREEXPAND;
+    private PreferenceScreen mSubscriptionIPPrefix;
 
 
     /**
@@ -90,6 +92,43 @@ public class MSimCallFeaturesSubSetting extends CallFeaturesSetting {
     /*
      * Click Listeners, handle click based on objects attached to UI.
      */
+
+    // Click listener for all toggle events
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (preference == mSubscriptionIPPrefix) {
+            View v = getLayoutInflater().inflate(R.layout.ip_prefix, null);
+            final EditText edit = (EditText) v.findViewById(R.id.ip_prefix_dialog_edit);
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + (mSubscription + 1));
+            edit.setText(ip_prefix);
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.ipcall_dialog_title)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(v)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String ip_prefix = edit.getText().toString();
+                                    Settings.System.putString(getContentResolver(),
+                                            Constants.SETTINGS_IP_PREFIX + (mSubscription + 1),
+                                            ip_prefix);
+                                    if (TextUtils.isEmpty(ip_prefix)) {
+                                        mSubscriptionIPPrefix.setSummary(
+                                                R.string.ipcall_sub_summery);
+                                    } else {
+                                        mSubscriptionIPPrefix.setSummary(edit.getText());
+                                    }
+                                    onResume();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return true;
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
 
     private void setScreenState() {
         int simState = MSimTelephonyManager.getDefault().getSimState(mSubscription);
@@ -121,6 +160,16 @@ public class MSimCallFeaturesSubSetting extends CallFeaturesSetting {
         }
         if (mSubscriptionPrefCDMA != null) {
             mSubscriptionPrefCDMA.getIntent().putExtra(SUBSCRIPTION_KEY, mSubscription);
+        }
+        mSubscriptionIPPrefix = (PreferenceScreen) findPreference(BUTTON_IPPREFIX_KEY);
+        if (mSubscriptionIPPrefix != null) {
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + (mSubscription + 1));
+            if (TextUtils.isEmpty(ip_prefix)) {
+                mSubscriptionIPPrefix.setSummary(R.string.ipcall_sub_summery);
+            } else {
+                mSubscriptionIPPrefix.setSummary(ip_prefix);
+            }
         }
 
     }

@@ -185,6 +185,12 @@
     <string name="emergency_number_exist">The entered emergency number already exists.</string>
     <string name="emergency_number_save_error">The entered emergency number is too long.</string>
 
+    <!-- IP call settings -->
+    <string name="ipcall_sub_title">IP call dial prefix</string>
+    <string name="ipcall_sub_summery">Edit prefix for calling through IP service</string>
+    <string name="ipcall_dialog_title">IP call settings</string>
+    <string name="ipcall_dialog_edit_hint">IP call dial prefix</string>
+
     <!-- Notification strings for video call -->
     <string name="notification_missedVideoCallTitle">Missed video call</string>
     <string name="notification_missedVideoCallsTitle">Missed video calls</string>

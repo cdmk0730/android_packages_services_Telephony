@@ -20,9 +20,6 @@
     <string name="direct_call_title">體感撥號</string>
     <string name="direct_call_summary">手機放在耳邊時將撥打當前撥號器輸入的電話號碼</string>
 
-    <!-- IP Call -->
-    <string name="dialer_ipcall_settings_title">IP撥號</string>
-
     <!-- SMSC-->
     <string name="smsc_settings_title">信息服務中心</string>
     <string name="smsc_settings_summary">設置和獲得信息服務中心號碼</string>

@@ -20,9 +20,6 @@
     <string name="direct_call_title">Direct call</string>
     <string name="direct_call_summary">Lift phone to ear after entering number in dialer to call directly</string>
 
-    <!-- IP Call -->
-    <string name="dialer_ipcall_settings_title">IP Call</string>
-
     <!-- SMSC-->
     <string name="smsc_settings_title">SMSC Settings</string>
     <string name="smsc_settings_summary">Set and get the smsc number</string>
@@ -51,9 +48,5 @@
     <!-- Non intrusive -->
     <string name="non_intrusive_incall_title">Non intrusive</string>
     <string name="non_intrusive_incall_summary">Use non intrusive dialog for incoming calls</string>
-
-    <!-- InCall Proximity Sensor -->
-    <string name="incall_proximity_sensor_title">Disable proximity sensor</string>
-    <string name="incall_proximity_sensor_summary">This will force phone to turn on the screen when calling.</string>
 
 </resources>

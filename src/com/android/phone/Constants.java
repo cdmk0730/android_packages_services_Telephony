@@ -149,7 +149,9 @@ public class Constants {
      */
     public static final String SETTINGS_PROXIMITY_SENSOR = "proximity_sensor";
 
-   /**
+    public static final String SETTINGS_IP_PREFIX = "ip_call_prefix_sub";
+
+    /**
      * CMCC network modes
      */
     public static final int NETWORK_MODE_DEFAULT = 0;

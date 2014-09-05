@@ -153,13 +153,6 @@
       android:persistent="false" />
 
   <CheckBoxPreference
-      android:key="button_incall_proximity_sensor"
-      android:title="@string/incall_proximity_sensor_title"
-      android:summary="@string/incall_proximity_sensor_summary"
-      android:persistent="false">
-  </CheckBoxPreference>
-
-  <CheckBoxPreference
       android:key="button_direct_call"
       android:title="@string/direct_call_title"
       android:summary="@string/direct_call_summary"
@@ -171,15 +164,6 @@
       android:summary="@string/non_intrusive_incall_summary"
       android:defaultValue="true"
       android:persistent="false" />
-
-  <PreferenceScreen
-      android:key="button_ipcall_key"
-      android:title="@string/dialer_ipcall_settings_title"
-      android:persistent="false">
-      <intent android:action="android.intent.action.MAIN"
-          android:targetPackage="com.android.dialer"
-          android:targetClass="com.android.dialer.preference.IPCallPreferenceActivity" />
-  </PreferenceScreen>
 
   <PreferenceScreen
       android:key="button_voicemail_category_key"
@@ -244,6 +228,13 @@
           android:targetPackage="com.android.settings"
           android:targetClass="com.android.settings.Settings$BlacklistSettingsActivity" />
   </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="button_ipprefix_key"
+        android:title="@string/ipcall_sub_title"
+        android:summary="@string/ipcall_sub_summery"
+        android:persistent="false">
+    </PreferenceScreen>
 
   <ListPreference
       android:key="button_incoming_call_style"

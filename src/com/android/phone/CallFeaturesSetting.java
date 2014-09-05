@@ -61,7 +61,9 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 
 import com.android.internal.telephony.CallForwardInfo;
@@ -204,7 +206,6 @@ public class CallFeaturesSetting extends PreferenceActivity
 
     private static final String BUTTON_DIRECT_CALL     = "button_direct_call";
     private static final String BUTTON_NON_INTRUSIVE_INCALL = "button_non_intrusive_incall";
-    private static final String BUTTON_INCALL_PROXIMITY_SENSOR = "button_incall_proximity_sensor";
 
     private static final String VM_NUMBERS_SHARED_PREFERENCES_NAME = "vm_numbers";
 
@@ -300,6 +301,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     // voicemail notification vibration string constants
     private static final String VOICEMAIL_VIBRATION_ALWAYS = "always";
     private static final String VOICEMAIL_VIBRATION_NEVER = "never";
+    private PreferenceScreen mIPPrefix;
 
     // Blacklist support
     private static final String BUTTON_BLACKLIST = "button_blacklist";
@@ -329,7 +331,6 @@ public class CallFeaturesSetting extends PreferenceActivity
     private CheckBoxPreference mPlayDtmfTone;
     private CheckBoxPreference mDirectCall;
     private CheckBoxPreference mNonIntrusiveIncall;
-    private CheckBoxPreference mDisableIncallProximitySensor;
     private ListPreference mFlipAction;
     private CheckBoxPreference mButtonAutoRetry;
     private CheckBoxPreference mButtonHAC;
@@ -557,7 +558,35 @@ public class CallFeaturesSetting extends PreferenceActivity
     // Click listener for all toggle events
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference == mPlayDtmfTone) {
+        if (preference == mIPPrefix) {
+            View v = getLayoutInflater().inflate(R.layout.ip_prefix, null);
+            final EditText edit = (EditText) v.findViewById(R.id.ip_prefix_dialog_edit);
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + 1);
+            edit.setText(ip_prefix);
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.ipcall_dialog_title)
+                    .setView(v)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String ip_prefix = edit.getText().toString();
+                                    Settings.System.putString(getContentResolver(),
+                                            Constants.SETTINGS_IP_PREFIX + 1, ip_prefix);
+                                    if (TextUtils.isEmpty(ip_prefix)) {
+                                        mIPPrefix.setSummary(
+                                                R.string.ipcall_sub_summery);
+                                    } else {
+                                        mIPPrefix.setSummary(edit.getText());
+                                    }
+                                    onResume();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return true;
+        } else if (preference == mPlayDtmfTone) {
             Settings.System.putInt(getContentResolver(), Settings.System.DTMF_TONE_WHEN_DIALING,
                     mPlayDtmfTone.isChecked() ? 1 : 0);
         } else if (preference == mDirectCall) {
@@ -566,9 +595,6 @@ public class CallFeaturesSetting extends PreferenceActivity
         } else if (preference == mNonIntrusiveIncall) {
             Settings.System.putInt(getContentResolver(), Settings.System.NON_INTRUSIVE_INCALL,
                     mNonIntrusiveIncall.isChecked() ? 1 : 0);
-        } else if (preference == mDisableIncallProximitySensor) {
-            Settings.System.putInt(getContentResolver(), Settings.System.INCALL_PROXIMITY_SENSOR_DISABLED,
-                    mDisableIncallProximitySensor.isChecked() ? 1 : 0);
         } else if (preference == mMwiNotification) {
             int mwiNotification = mMwiNotification.isChecked() ? 1 : 0;
             Settings.System.putInt(mPhone.getContext().getContentResolver(),
@@ -1658,9 +1684,20 @@ public class CallFeaturesSetting extends PreferenceActivity
         mT9SearchInputLocale = (ListPreference) findPreference(BUTTON_T9_SEARCH_INPUT_LOCALE);
         mIncomingCallStyle = (ListPreference) findPreference(BUTTON_INCOMING_CALL_STYLE);
         mButtonProximity = (CheckBoxPreference) findPreference(BUTTON_PROXIMITY_KEY);
+        mIPPrefix = (PreferenceScreen) findPreference(BUTTON_IPPREFIX_KEY);
 
         if (mT9SearchInputLocale != null) {
             initT9SearchInputPreferenceList();
+        }
+
+        if (mIPPrefix != null) {
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + 1);
+            if (TextUtils.isEmpty(ip_prefix)) {
+                mIPPrefix.setSummary(R.string.ipcall_sub_summery);
+            } else {
+                mIPPrefix.setSummary(ip_prefix);
+            }
         }
 
         final ContentResolver contentResolver = getContentResolver();
@@ -1680,16 +1717,6 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (mNonIntrusiveIncall != null) {
             mNonIntrusiveIncall.setChecked(Settings.System.getInt(contentResolver,
                     Settings.System.NON_INTRUSIVE_INCALL, 1) != 0);
-        }
-
-        mDisableIncallProximitySensor = (CheckBoxPreference) findPreference(BUTTON_INCALL_PROXIMITY_SENSOR);
-        if (mDisableIncallProximitySensor != null) {
-            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_PROXIMITY)) {
-                prefSet.removePreference(mDisableIncallProximitySensor);
-            } else {
-                mDisableIncallProximitySensor.setChecked(Settings.System.getInt(contentResolver,
-                    Settings.System.INCALL_PROXIMITY_SENSOR_DISABLED, 0) != 0);
-            }
         }
 
         if (mFlipAction != null) {
@@ -1900,7 +1927,6 @@ public class CallFeaturesSetting extends PreferenceActivity
             mButtonTTY.setValue(Integer.toString(settingsTtyMode));
             updatePreferredTtyModeSummary(settingsTtyMode);
         }
-
 
         if (mFlipAction != null) {
             updateFlipActionSummary(mFlipAction.getValue());
@@ -2624,6 +2650,11 @@ public class CallFeaturesSetting extends PreferenceActivity
                 mButtonProximity != null) {
             preferenceScreen.removePreference(mButtonProximity);
             mButtonProximity = null;
+        }
+        if (!getResources().getBoolean(R.bool.config_ip_prefix_enable) &&
+                mIPPrefix != null) {
+            preferenceScreen.removePreference(mIPPrefix);
+            mIPPrefix = null;
         }
         if (!getResources().getBoolean(R.bool.world_phone)) {
             Preference options = preferenceScreen.findPreference(BUTTON_CDMA_OPTIONS);

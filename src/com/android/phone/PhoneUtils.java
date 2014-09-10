@@ -1353,7 +1353,6 @@ public class PhoneUtils {
                 sUssdMsg.insert(0, text);
                 sUssdDialog.setMessage(sUssdMsg.toString());
                 sUssdDialog.show();
-                app.setUSSDResponseDialog(sUssdDialog);
             } else {
                 if (DBG) log("USSD code has requested user input. Constructing input dialog.");
 
@@ -3711,5 +3710,15 @@ public class PhoneUtils {
 
     public static boolean getIgnoreCallState() {
         return ignoreCallState;
+    }
+
+    public static void maybeShowOrHideUssdDialog(boolean show) {
+        if (sUssdDialog == null) return;
+        if (sUssdDialog.isShowing() && !show) {
+            sUssdDialog.hide();
+        } else {
+            sUssdDialog.show();
+        }
+
     }
 }

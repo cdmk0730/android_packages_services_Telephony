@@ -39,7 +39,7 @@
     </string-array>
 
     <string-array name="call_log_delete_limit_entries">
-        <item>500 (Default)</item>
+        <item>@string/call_log_delete_limit_default</item>
         <item>2500</item>
         <item>5000</item>
         <item>Do not limit</item>

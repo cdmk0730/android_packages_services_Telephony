@@ -38,11 +38,11 @@
         <item>@string/summary_dismiss_call</item>
     </string-array>
 
-    <string-array name="call_log_delete_limit_entries">
+    <string-array name="call_log_delete_limit_entries" translatable="false">
         <item>@string/call_log_delete_limit_default</item>
         <item>2500</item>
         <item>5000</item>
-        <item>Do not limit</item>
+        <item>@string/call_log_delete_limit_nolimit</item>
     </string-array>
 
     <string-array name="call_log_delete_limit_values" translatable="false">

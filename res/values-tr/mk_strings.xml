@@ -18,6 +18,7 @@
   <string name="direct_call_title">Doğrudan Arama</string>
   <string name="direct_call_summary">Doğrudan aramak için çeviriciye numarayı girdikten sonra telefonu kulağa götür</string>
   <string name="smsc_settings_title">SMSC Ayarları</string>
+  <string name="smsc_settings_summary">Ayarla ve getir smsc sayısını verir</string>
   <string name="show_smscnum">SMSC numarasını göster</string>
   <string name="smsc_number_invalid">SMSC numarası geçersiz</string>
   <string name="smsc_refresh">Yenile</string>
@@ -31,4 +32,6 @@
   <string name="summary_do_nothing">Hiçbir şey yapma</string>
   <string name="summary_mute_ringer">zil sesini kapat</string>
   <string name="summary_dismiss_call">aramayı reddet</string>
+  <string name="non_intrusive_incall_title">Kesintisiz</string>
+  <string name="non_intrusive_incall_summary">Gelen aramalar için kesintisiz iletişim kutusu kullan</string>
 </resources>

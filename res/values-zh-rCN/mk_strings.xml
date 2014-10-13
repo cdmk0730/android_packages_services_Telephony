@@ -34,4 +34,8 @@
   <string name="summary_dismiss_call">拒绝来电</string>
   <string name="non_intrusive_incall_title">非侵入式来电</string>
   <string name="non_intrusive_incall_summary">使用非侵入式提示代替全屏来电界面</string>
+  <string name="call_log_delete_limit_title">通话记录限制</string>
+  <string name="call_log_delete_limit_summary">达到 <xliff:g id="count">%1$s</xliff:g> 条通话记录时删除旧记录</string>
+  <string name="call_log_delete_limit_default">500 (默认)</string>
+  <string name="call_log_delete_limit_nolimit">不限制</string>
 </resources>

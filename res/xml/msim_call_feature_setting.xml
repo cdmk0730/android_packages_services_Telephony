@@ -138,6 +138,14 @@
             android:defaultValue="true"
             android:persistent="false" />
 
+    <ListPreference
+            android:key="button_call_log_delete_limit"
+            android:title="@string/call_log_delete_limit_title"
+            android:dialogTitle="@string/call_log_delete_limit_title"
+            android:entries="@array/call_log_delete_limit_entries"
+            android:entryValues="@array/call_log_delete_limit_values"
+            android:persistent="false" />
+
     <PreferenceScreen
             android:key="button_blacklist"
             android:title="@string/blacklist_title"

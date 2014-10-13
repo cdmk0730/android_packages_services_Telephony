@@ -207,6 +207,7 @@ public class CallFeaturesSetting extends PreferenceActivity
 
     private static final String BUTTON_DIRECT_CALL     = "button_direct_call";
     private static final String BUTTON_NON_INTRUSIVE_INCALL = "button_non_intrusive_incall";
+    private static final String BUTTON_CALL_LOG_DELETE_LIMIT = "button_call_log_delete_limit";
 
     private static final String VM_NUMBERS_SHARED_PREFERENCES_NAME = "vm_numbers";
 
@@ -332,6 +333,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private CheckBoxPreference mPlayDtmfTone;
     private CheckBoxPreference mDirectCall;
     private CheckBoxPreference mNonIntrusiveIncall;
+    private ListPreference mCallLogDeleteLimit;
     private ListPreference mFlipAction;
     private CheckBoxPreference mButtonAutoRetry;
     private CheckBoxPreference mButtonHAC;
@@ -731,6 +733,9 @@ public class CallFeaturesSetting extends PreferenceActivity
             saveLookupProviderSetting(preference, (String) objValue);
         } else if (preference == mT9SearchInputLocale) {
             saveT9SearchInputLocale(preference, (String) objValue);
+        } else if (preference == mCallLogDeleteLimit) {;
+            Settings.System.putInt(getContentResolver(), Settings.System.CALL_LOG_DELETE_LIMIT, Integer.parseInt((String) objValue));
+            mCallLogDeleteLimit.setSummary(getString(R.string.call_log_delete_limit_summary, (String) objValue));
         } else if (preference == mFlipAction) {
             updateFlipActionSummary((String) objValue);
             Settings.System.putInt(getContentResolver(), Settings.System.FLIP_ACTION_KEY, Integer.parseInt((String) objValue));
@@ -1671,6 +1676,7 @@ public class CallFeaturesSetting extends PreferenceActivity
 
         mDirectCall = (CheckBoxPreference) findPreference(BUTTON_DIRECT_CALL);
         mNonIntrusiveIncall = (CheckBoxPreference) findPreference(BUTTON_NON_INTRUSIVE_INCALL);
+        mCallLogDeleteLimit = (ListPreference) findPreference(BUTTON_CALL_LOG_DELETE_LIMIT);
         mFlipAction = (ListPreference) findPreference(FLIP_ACTION_KEY);
 
         mPlayDtmfTone = (CheckBoxPreference) findPreference(BUTTON_PLAY_DTMF_TONE);
@@ -1713,6 +1719,13 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (mDirectCall != null) {
             mDirectCall.setChecked(Settings.System.getInt(contentResolver,
                     Settings.System.DIALER_DIRECT_CALL, 0) != 0);
+        }
+
+        if (mCallLogDeleteLimit != null) {
+            int count = Settings.System.getInt(contentResolver, Settings.System.CALL_LOG_DELETE_LIMIT, 500);
+            mCallLogDeleteLimit.setOnPreferenceChangeListener(this);
+            mCallLogDeleteLimit.setValue(String.valueOf(count));
+            mCallLogDeleteLimit.setSummary(getString(R.string.call_log_delete_limit_summary, count));
         }
 
         if (mNonIntrusiveIncall != null) {

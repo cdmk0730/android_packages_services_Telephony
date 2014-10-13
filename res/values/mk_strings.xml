@@ -49,4 +49,7 @@
     <string name="non_intrusive_incall_title">Non intrusive</string>
     <string name="non_intrusive_incall_summary">Use non intrusive dialog for incoming calls</string>
 
+    <!-- Call Log Delete Limit  -->
+    <string name="call_log_delete_limit_title">Call log limit</string>
+    <string name="call_log_delete_limit_summary">Keep on <xliff:g id="count">%1$s</xliff:g> call log</string>
 </resources>

@@ -735,7 +735,7 @@ public class CallFeaturesSetting extends PreferenceActivity
             saveT9SearchInputLocale(preference, (String) objValue);
         } else if (preference == mCallLogDeleteLimit) {;
             Settings.System.putInt(getContentResolver(), Settings.System.CALL_LOG_DELETE_LIMIT, Integer.parseInt((String) objValue));
-            mCallLogDeleteLimit.setSummary(getString(R.string.call_log_delete_limit_summary, (String) objValue));
+            mCallLogDeleteLimit.setSummary(Integer.valueOf((String) objValue) == 0 ? getString(R.string.call_log_delete_limit_nolimit) : getString(R.string.call_log_delete_limit_summary, (String) objValue));
         } else if (preference == mFlipAction) {
             updateFlipActionSummary((String) objValue);
             Settings.System.putInt(getContentResolver(), Settings.System.FLIP_ACTION_KEY, Integer.parseInt((String) objValue));

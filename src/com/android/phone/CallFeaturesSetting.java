@@ -1725,7 +1725,7 @@ public class CallFeaturesSetting extends PreferenceActivity
             int count = Settings.System.getInt(contentResolver, Settings.System.CALL_LOG_DELETE_LIMIT, 500);
             mCallLogDeleteLimit.setOnPreferenceChangeListener(this);
             mCallLogDeleteLimit.setValue(String.valueOf(count));
-            mCallLogDeleteLimit.setSummary(getString(R.string.call_log_delete_limit_summary, count));
+            mCallLogDeleteLimit.setSummary(count == 0 ? getString(R.string.call_log_delete_limit_nolimit) : getString(R.string.call_log_delete_limit_summary, count));
         }
 
         if (mNonIntrusiveIncall != null) {

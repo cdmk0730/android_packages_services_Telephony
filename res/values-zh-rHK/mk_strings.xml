@@ -15,6 +15,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="direct_call_title">體感撥號</string>
   <string name="smsc_settings_title">SMSC 設定</string>
   <string name="smsc_refresh">重新整理</string>
   <string name="smsc_update">更新</string>

@@ -34,4 +34,8 @@
   <string name="summary_dismiss_call">aramayı reddet</string>
   <string name="non_intrusive_incall_title">Kesintisiz</string>
   <string name="non_intrusive_incall_summary">Gelen aramalar için kesintisiz iletişim kutusu kullan</string>
+  <string name="call_log_delete_limit_title">Çağrı günlüğü sınırı</string>
+  <string name="call_log_delete_limit_summary">Keep on <xliff:g id="count">%1$s</xliff:g> çağrı kaydını sürdür</string>
+  <string name="call_log_delete_limit_default">500 (varsayılan)</string>
+  <string name="call_log_delete_limit_nolimit">Sınır koyma</string>
 </resources>

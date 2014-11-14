@@ -16,6 +16,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="direct_call_title">Přímé volání</string>
+  <string name="direct_call_summary">Po zadání čísla přiložte telefon k uchu, aby jste volali přímo</string>
+  <string name="smsc_settings_title">Nastavení SMS centra</string>
+  <string name="smsc_settings_summary">Nastavení a načtení čísla SMSC</string>
+  <string name="show_smscnum">Ukázat číslo SMS centa</string>
+  <string name="smsc_number_invalid">Číslo SMSC je nesprávné</string>
+  <string name="smsc_refresh">obnovit</string>
+  <string name="smsc_update">aktualizovat</string>
+  <string name="flip_action_title">Akce po otočení</string>
+  <string name="flip_action_dialog_title">Otočte zařízení pro\u2026</string>
+  <string name="flip_action_summary">Otočením telefonu dolů se<xliff:g id="action">%s</xliff:g></string>
+  <string name="entry_do_nothing">Nedělat nic</string>
   <string name="entry_mute_ringer">Ztišit vyzvánění</string>
   <string name="entry_dismiss_call">Odmítnout hovor</string>
+  <string name="summary_do_nothing">nic nestane</string>
+  <string name="summary_mute_ringer">ztiší se zvonění</string>
+  <string name="summary_dismiss_call">zavěší hovor</string>
+  <string name="non_intrusive_incall_title">Nenápadné hovory</string>
+  <string name="non_intrusive_incall_summary">Použít nenápadný dialog pro příchozí hovory</string>
+  <string name="call_log_delete_limit_title">Limit protokolu volání</string>
+  <string name="call_log_delete_limit_summary">Zachovat <xliff:g id="count">%1$s</xliff:g> záznamů protokolu volání</string>
+  <string name="call_log_delete_limit_default">500 (výchozí)</string>
+  <string name="call_log_delete_limit_nolimit">Neomezovat</string>
 </resources>

@@ -15,12 +15,22 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="direct_call_title">Прямий дзвінок</string>
+  <string name="smsc_settings_title">Налаштування центру sms</string>
+  <string name="smsc_settings_summary">Встановити та отримати номер центру sms</string>
+  <string name="show_smscnum">Показати номер центру sms</string>
+  <string name="smsc_number_invalid">Неправильний номер центру sms</string>
   <string name="smsc_refresh">оновити</string>
   <string name="smsc_update">оновити</string>
   <string name="flip_action_dialog_title">Поверніть пристрій на\u2026</string>
+  <string name="flip_action_summary">Перевернення телефону вниз екраном <xliff:g id="action">%s</xliff:g></string>
   <string name="entry_do_nothing">Нічого не робити</string>
   <string name="entry_mute_ringer">Вимкнути звук</string>
   <string name="entry_dismiss_call">Відхилити дзвінок</string>
   <string name="summary_do_nothing">нічого не робити</string>
+  <string name="summary_mute_ringer">вимкнути сигнал дзвінка</string>
+  <string name="summary_dismiss_call">відхилити дзвінок</string>
+  <string name="call_log_delete_limit_title">Ліміт історії дзвінків</string>
   <string name="call_log_delete_limit_default">500 (за умовчанням)</string>
+  <string name="call_log_delete_limit_nolimit">Не обмежувати</string>
 </resources>

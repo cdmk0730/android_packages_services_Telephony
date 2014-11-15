@@ -166,6 +166,17 @@
     <string name="preferred_network_mode_gsm_only_choice">"仅 GSM"</string>
     <string name="preferred_network_mode_gsm_wcdma_preferred_choice">"首选 GSM/WCDMA"</string>
 
+    <string name="videocall_settings">视频通话设置</string>
+    <string name="vt_fallback_setting">自动回落</string>
+    <string name="vt_forward_setting">呼叫转移</string>
+    <string name="vt_imagereplace_setting">替换图片</string>
+    <string name="vt_fallback_setting_sum">转为语音通话设置</string>
+    <string name="vt_forward_setting_sum">呼叫转移设置</string>
+    <string name="vt_imagereplace_setting_sum">关闭相机时的照片显示</string>
+    <string name="fallback_setting_label">转语音设置</string>
+    <string name="labelVTCF">呼叫转移</string>
+    <string name="image_replace_setting_label">可视电话替代图片设置</string>
+
     <string name="data_enabled" msgid="5972538663568715366">"启用移动数据网络"</string>
     <!-- no translation found for data_enable_summary (2382798156640007971) -->
     <skip />
@@ -519,6 +530,19 @@
     <string name="enable_video_calling_dialog_msg" msgid="6547569773866546434">"要开启视频通话功能，您需要在系统设置中启用增强型4G LTE模式。"</string>
     <string name="enable_video_calling_dialog_settings" msgid="576528473599603249">"网络设置"</string>
     <string name="enable_video_calling_dialog_close" msgid="7411471282167927991">"关闭"</string>
+    <string name="proximity_mode_title">"打开距离传感器"</string>
+    <string name="proximity_on_summary">"接听电话时，屏幕会关闭，从而节省电量"</string>
+    <string name="proximity_off_summary">"接听电话时，屏幕保持开启状态"</string>
+    <string name="vibrate_after_connected_title">"接通振动提示"</string>
+    <string name="vibrate_after_connected_summary">"对方接通时振动"</string>
+    <string name="preferred_duration_title">挂机显示通话时长</string>
+    <string name="duration_enable_summary">挂机显示通话时长已开启</string>
+    <string name="duration_disable_summary">挂机显示通话时长已关闭</string>
+    <string name="ipcall">IP电话设置</string>
+    <string name="ipcall_sub_title">IP电话设置</string>
+    <string name="ipcall_sub_summery">修改IP电话前缀</string>
+    <string name="ipcall_dialog_title">IP电话设置</string>
+    <string name="ipcall_dialog_edit_hint">请输入IP电话前缀</string>
 
     <!-- UPLMN Prefer -->
     <string name="uplmn_list_setting_title">偏好设置</string>
@@ -556,4 +580,9 @@
     <string name="china_mobile">中国移动</string>
     <string name="china_unicom">中国联通</string>
     <string name="china_telecom">中国电信</string>
+
+    <string name="preferred_lte">"启用4G单数据"</string>
+    <string name="preferred_lte_summary">"启用4G单数据时，语音和短信功能将不能使用"</string>
+
+    <string name="speed_dial_setting">快速拨号设置</string>
 </resources>

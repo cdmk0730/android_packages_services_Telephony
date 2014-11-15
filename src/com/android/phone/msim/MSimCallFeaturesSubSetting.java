@@ -39,6 +39,7 @@ import android.os.AsyncResult;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemProperties;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -52,7 +53,9 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 
 import com.android.internal.telephony.CallForwardInfo;
@@ -171,11 +174,16 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
             "button_voicemail_notification_ringtone_key";
     private static final String BUTTON_FDN_KEY   = "button_fdn_key";
 
+    private static final String BUTTON_VIDEO_CALL_FB_KEY = "videocall_setting_fb_key";
+    private static final String BUTTON_VIDEO_CALL_FW_KEY = "videocall_setting_fw_key";
+    private static final String BUTTON_VIDEO_CALL_SP_KEY = "vt_imageplacer";
     private static final String BUTTON_GSM_UMTS_OPTIONS = "button_gsm_more_expand_key";
     private static final String BUTTON_CDMA_OPTIONS = "button_cdma_more_expand_key";
 
     private static final String BUTTON_CF_EXPAND_KEY = "button_cf_expand_key";
     private static final String BUTTON_MORE_EXPAND_KEY = "button_more_expand_key";
+
+    private static final String BUTTON_IPPREFIX_KEY = "button_ipprefix_key";
 
 
     private static final String VM_NUMBERS_SHARED_PREFERENCES_NAME = "vm_numbers";
@@ -230,6 +238,11 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
     private PreferenceScreen mSubscriptionPrefEXPAND;
     private PreferenceScreen mSubscriptionPrefMOREEXPAND;
 
+    private PreferenceScreen mIPPrefixPreference;
+    private PreferenceScreen mButtonVideoCallFallback;
+    private PreferenceScreen mButtonVideoCallForward;
+    private PreferenceScreen mButtonVideoCallPictureSelect;
+
     private EditPhoneNumberPreference mSubMenuVoicemailSettings;
 
     private Runnable mRingtoneLookupRunnable;
@@ -255,6 +268,7 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
     private CheckBoxPreference mVoicemailNotificationVibrate;
 
     private long mSubId;
+    private int mSlotId;
 
     private class VoiceMailProvider {
         public VoiceMailProvider(String name, Intent intent) {
@@ -459,6 +473,35 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == mSubMenuVoicemailSettings) {
             return true;
+        } else if (preference == mIPPrefixPreference) {
+            View v = getLayoutInflater().inflate(R.layout.ip_prefix, null);
+            final EditText edit = (EditText) v.findViewById(R.id.ip_prefix_dialog_edit);
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + (mSlotId + 1));
+            edit.setText(ip_prefix);
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.ipcall_dialog_title)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(v)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String ip_prefix = edit.getText().toString();
+                                    Settings.System.putString(getContentResolver(),
+                                            Constants.SETTINGS_IP_PREFIX + (mSlotId + 1),
+                                            ip_prefix);
+                                    if (TextUtils.isEmpty(ip_prefix)) {
+                                        mIPPrefixPreference.setSummary(
+                                                R.string.ipcall_sub_summery);
+                                    } else {
+                                        mIPPrefixPreference.setSummary(edit.getText());
+                                    }
+                                    onResume();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return true;
         } else if (preference == mVoicemailSettings) {
             if (DBG) log("onPreferenceTreeClick: Voicemail Settings Preference is clicked.");
             if (preference.getIntent() != null) {
@@ -484,6 +527,15 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
                 // This should let the preference use default behavior in the xml.
                 return false;
             }
+        } else if (preference == mButtonVideoCallFallback) {
+            startActivity(getVTCallFBSettingsIntent());
+            return true;
+        } else if (preference == mButtonVideoCallForward) {
+            startActivity(getVTCallFWSettingsIntent());
+            return true;
+        } else if (preference == mButtonVideoCallPictureSelect) {
+            startActivity(getVTCallImageSettingsIntent());
+            return true;
         }
         return false;
     }
@@ -1456,6 +1508,7 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
 
         // getting selected subscription
         mSubId = PhoneUtils.getSubIdFromIntent(getIntent());
+        mSlotId = getIntent().getIntExtra(PhoneConstants.SLOT_KEY, -1);
 
         mSubscriptionPrefFDN  = (PreferenceScreen) findPreference(BUTTON_FDN_KEY);
         mSubscriptionPrefGSM  = (PreferenceScreen) findPreference(BUTTON_GSM_UMTS_OPTIONS);
@@ -1482,6 +1535,9 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
         if (mRingtonePreference != null) {
             mRingtonePreference.setSubId(mPhone.getPhoneId());
         }
+
+        mIPPrefixPreference = (PreferenceScreen) findPreference(BUTTON_IPPREFIX_KEY);
+
         mVoicemailProviders = (ListPreference) findPreference(BUTTON_VOICEMAIL_PROVIDER_KEY);
         if (mVoicemailProviders != null) {
             mVoicemailProviders.setOnPreferenceChangeListener(this);
@@ -1584,6 +1640,13 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
         super.onResume();
         mForeground = true;
 
+        if(isVTSupported()) {
+            mButtonVideoCallFallback = (PreferenceScreen)findPreference(BUTTON_VIDEO_CALL_FB_KEY);
+            mButtonVideoCallForward = (PreferenceScreen) findPreference(BUTTON_VIDEO_CALL_FW_KEY);
+            mButtonVideoCallPictureSelect = (PreferenceScreen)
+                    findPreference(BUTTON_VIDEO_CALL_SP_KEY);
+        }
+
         if (isAirplaneModeOn()) {
             PreferenceScreen screen = getPreferenceScreen();
             int count = screen.getPreferenceCount();
@@ -1591,6 +1654,28 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
                 Preference pref = screen.getPreference(i);
             }
             return;
+        }
+
+        if (mButtonVideoCallFallback != null) {
+            mButtonVideoCallFallback.setOnPreferenceChangeListener(this);
+        }
+
+        if (mButtonVideoCallForward != null) {
+            mButtonVideoCallForward.setOnPreferenceChangeListener(this);
+        }
+
+        if (mButtonVideoCallPictureSelect != null) {
+            mButtonVideoCallPictureSelect.setOnPreferenceChangeListener(this);
+        }
+
+        if (mIPPrefixPreference != null) {
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX + (mSlotId + 1));
+            if (TextUtils.isEmpty(ip_prefix)) {
+                mIPPrefixPreference.setSummary(R.string.ipcall_sub_summery);
+            } else {
+                mIPPrefixPreference.setSummary(ip_prefix);
+            }
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
@@ -1854,6 +1939,30 @@ public class MSimCallFeaturesSubSetting extends PreferenceActivity
         return settings;
     }
 
+    private static Intent getVTCallFBSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.FallBackSetting");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private static Intent getVTCallFWSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.VTCallForwardOptions");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private static Intent getVTCallImageSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.VTImageReplaceSetting");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private boolean isVTSupported() {
+        return SystemProperties.getBoolean("persist.radio.csvt.enabled", false);
+    }
     /**
      * Deletes settings for the specified provider.
      */

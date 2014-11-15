@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2014 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.UserHandle;
+import android.os.SystemProperties;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -54,7 +56,9 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 
 import com.android.internal.telephony.CallForwardInfo;
@@ -64,12 +68,15 @@ import com.android.internal.telephony.PhoneConstants;
 import com.android.phone.common.util.SettingsUtil;
 import com.android.phone.settings.AccountSelectionPreference;
 import com.android.services.telephony.sip.SipUtil;
+import com.android.internal.telephony.util.BlacklistUtils;
 
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -175,6 +182,13 @@ public class CallFeaturesSetting extends PreferenceActivity
     private static final String BUTTON_RETRY_KEY       = "button_auto_retry_key";
     private static final String BUTTON_TTY_KEY         = "button_tty_mode_key";
     private static final String BUTTON_HAC_KEY         = "button_hac_key";
+    private static final String BUTTON_PROXIMITY_KEY   = "button_proximity_key";
+    private static final String BUTTON_VIBRATE_CONNECTED_KEY = "button_vibrate_after_connected";
+    private static final String SHOW_DURATION_KEY      = "duration_enable_key";
+    private static final String BUTTON_IPPREFIX_KEY = "button_ipprefix_key";
+    private static final String BUTTON_VIDEO_CALL_FB_KEY = "videocall_setting_fb_key";
+    private static final String BUTTON_VIDEO_CALL_FW_KEY = "videocall_setting_fw_key";
+    private static final String BUTTON_VIDEO_CALL_SP_KEY = "vt_imageplacer";
 
     private static final String BUTTON_GSM_UMTS_OPTIONS = "button_gsm_more_expand_key";
     private static final String BUTTON_CDMA_OPTIONS = "button_cdma_more_expand_key";
@@ -187,6 +201,20 @@ public class CallFeaturesSetting extends PreferenceActivity
 
     private static final String BUTTON_SELECT_SUB_KEY  = "button_call_independent_serv";
     private static final String BUTTON_XDIVERT_KEY = "button_xdivert";
+
+    private static final String SWITCH_ENABLE_FORWARD_LOOKUP =
+            "switch_enable_forward_lookup";
+    private static final String SWITCH_ENABLE_PEOPLE_LOOKUP =
+            "switch_enable_people_lookup";
+    private static final String SWITCH_ENABLE_REVERSE_LOOKUP =
+            "switch_enable_reverse_lookup";
+    private static final String BUTTON_CHOOSE_FORWARD_LOOKUP_PROVIDER =
+            "button_choose_forward_lookup_provider";
+    private static final String BUTTON_CHOOSE_PEOPLE_LOOKUP_PROVIDER =
+            "button_choose_people_lookup_provider";
+    private static final String BUTTON_CHOOSE_REVERSE_LOOKUP_PROVIDER =
+            "button_choose_reverse_lookup_provider";
+
     private Intent mContactListIntent;
 
     /** Event for Async voicemail change call */
@@ -234,6 +262,13 @@ public class CallFeaturesSetting extends PreferenceActivity
     private static final String VOICEMAIL_VIBRATION_ALWAYS = "always";
     private static final String VOICEMAIL_VIBRATION_NEVER = "never";
 
+    // Blacklist support
+    private static final String BUTTON_BLACKLIST = "button_blacklist";
+    private PreferenceScreen mIPPrefixPreference;
+    private PreferenceScreen mButtonVideoCallFallback;
+    private PreferenceScreen mButtonVideoCallForward;
+    private PreferenceScreen mButtonVideoCallPictureSelect;
+
     private EditPhoneNumberPreference mSubMenuVoicemailSettings;
 
     private Runnable mVoicemailRingtoneLookupRunnable;
@@ -259,7 +294,18 @@ public class CallFeaturesSetting extends PreferenceActivity
     private PreferenceScreen mVoicemailSettings;
     private Preference mVoicemailNotificationRingtone;
     private CheckBoxPreference mVoicemailNotificationVibrate;
+    private CheckBoxPreference mButtonProximity;
+    private CheckBoxPreference mVibrateAfterConnected;
+    private CheckBoxPreference mShowDurationCheckBox;
     private AccountSelectionPreference mDefaultOutgoingAccount;
+    private boolean isSpeedDialListStarted = false;
+    private PreferenceScreen mButtonBlacklist;
+    private CheckBoxPreference mEnableForwardLookup;
+    private CheckBoxPreference mEnablePeopleLookup;
+    private CheckBoxPreference mEnableReverseLookup;
+    private ListPreference mChooseForwardLookupProvider;
+    private ListPreference mChoosePeopleLookupProvider;
+    private ListPreference mChooseReverseLookupProvider;
 
     private class VoiceMailProvider {
         public VoiceMailProvider(String name, Intent intent) {
@@ -487,6 +533,35 @@ public class CallFeaturesSetting extends PreferenceActivity
             // Update HAC Value in AudioManager
             mAudioManager.setParameter(HAC_KEY, hac != 0 ? HAC_VAL_ON : HAC_VAL_OFF);
             return true;
+        } else if (preference == mIPPrefixPreference) {
+            View v = getLayoutInflater().inflate(R.layout.ip_prefix, null);
+            final EditText edit = (EditText) v.findViewById(R.id.ip_prefix_dialog_edit);
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX);
+            edit.setText(ip_prefix);
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.ipcall_dialog_title)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(v)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String ip_prefix = edit.getText().toString();
+                                    Settings.System.putString(getContentResolver(),
+                                            Constants.SETTINGS_IP_PREFIX, ip_prefix);
+                                    if (TextUtils.isEmpty(ip_prefix)) {
+                                        mIPPrefixPreference.setSummary(
+                                                R.string.ipcall_sub_summery);
+                                    } else {
+                                        mIPPrefixPreference.setSummary(edit.getText());
+                                    }
+                                    onResume();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return true;
         } else if (preference == mVoicemailSettings) {
             final Dialog dialog = mVoicemailSettings.getDialog();
             if (dialog != null) {
@@ -522,6 +597,15 @@ public class CallFeaturesSetting extends PreferenceActivity
                 dialog.getActionBar().setDisplayHomeAsUpEnabled(false);
             }
             return false;
+        } else if (preference == mButtonVideoCallFallback) {
+            startActivity(getVTCallFBSettingsIntent());
+            return true;
+        } else if (preference == mButtonVideoCallForward) {
+            startActivity(getVTCallFWSettingsIntent());
+            return true;
+        } else if (preference == mButtonVideoCallPictureSelect) {
+            startActivity(getVTCallImageSettingsIntent());
+            return true;
         }
         return false;
     }
@@ -547,6 +631,22 @@ public class CallFeaturesSetting extends PreferenceActivity
                     Settings.System.DTMF_TONE_TYPE_WHEN_DIALING, index);
         } else if (preference == mButtonTTY) {
             handleTTYChange(preference, objValue);
+        } else if (preference == mButtonProximity) {
+            boolean checked = (Boolean) objValue;
+            Settings.System.putInt(mPhone.getContext().getContentResolver(),
+                    Constants.SETTINGS_PROXIMITY_SENSOR, checked ? 1 : 0);
+            mButtonProximity.setSummary(checked ? R.string.proximity_on_summary
+                    : R.string.proximity_off_summary);
+        } else if (preference == mVibrateAfterConnected) {
+            boolean doVibrate = (Boolean) objValue;
+            Settings.System.putInt(mPhone.getContext().getContentResolver(),
+                    Constants.SETTINGS_VIBRATE_WHEN_ACCEPTED, doVibrate ? 1 : 0);
+        } else if (preference == mShowDurationCheckBox) {
+            boolean checked = (Boolean) objValue;
+            Settings.System.putInt(mPhone.getContext().getContentResolver(),
+                    Constants.SETTINGS_SHOW_CALL_DURATION, checked ? 1 : 0);
+            mShowDurationCheckBox.setSummary(checked ? R.string.duration_enable_summary
+                    : R.string.duration_disable_summary);
         } else if (preference == mVoicemailProviders) {
             final String newProviderKey = (String) objValue;
             if (DBG) {
@@ -580,6 +680,14 @@ public class CallFeaturesSetting extends PreferenceActivity
                 mChangingVMorFwdDueToProviderChange = true;
                 saveVoiceMailAndForwardingNumber(newProviderKey, newProviderSettings);
             }
+        } else if (preference == mEnableForwardLookup
+                || preference == mEnablePeopleLookup
+                || preference == mEnableReverseLookup) {
+            saveLookupProviderSwitch(preference, (Boolean) objValue);
+        } else if (preference == mChooseForwardLookupProvider
+                || preference == mChoosePeopleLookupProvider
+                || preference == mChooseReverseLookupProvider) {
+            saveLookupProviderSetting(preference, (String) objValue);
         }
         // always let the preference setting proceed.
         return true;
@@ -1563,11 +1671,22 @@ public class CallFeaturesSetting extends PreferenceActivity
             mSubMenuVoicemailSettings.setDialogTitle(R.string.voicemail_settings_number_label);
         }
 
+        if(isVTSupported()) {
+            mButtonVideoCallFallback = (PreferenceScreen)findPreference(BUTTON_VIDEO_CALL_FB_KEY);
+            mButtonVideoCallForward = (PreferenceScreen) findPreference(BUTTON_VIDEO_CALL_FW_KEY);
+            mButtonVideoCallPictureSelect = (PreferenceScreen)
+                    findPreference(BUTTON_VIDEO_CALL_SP_KEY);
+        }
+
         mButtonDTMF = (ListPreference) findPreference(BUTTON_DTMF_KEY);
         mButtonAutoRetry = (CheckBoxPreference) findPreference(BUTTON_RETRY_KEY);
         mButtonHAC = (CheckBoxPreference) findPreference(BUTTON_HAC_KEY);
         mButtonTTY = (ListPreference) findPreference(BUTTON_TTY_KEY);
         mVoicemailProviders = (ListPreference) findPreference(BUTTON_VOICEMAIL_PROVIDER_KEY);
+        mButtonProximity = (CheckBoxPreference) findPreference(BUTTON_PROXIMITY_KEY);
+        mVibrateAfterConnected = (CheckBoxPreference) findPreference(BUTTON_VIBRATE_CONNECTED_KEY);
+        mShowDurationCheckBox = (CheckBoxPreference) findPreference(SHOW_DURATION_KEY);
+        mIPPrefixPreference = (PreferenceScreen) findPreference(BUTTON_IPPREFIX_KEY);
 
         if (mVoicemailProviders != null) {
             mVoicemailProviders.setOnPreferenceChangeListener(this);
@@ -1589,6 +1708,30 @@ public class CallFeaturesSetting extends PreferenceActivity
                 prefSet.removePreference(mButtonDTMF);
                 mButtonDTMF = null;
             }
+        }
+
+        if (mButtonVideoCallFallback != null) {
+            mButtonVideoCallFallback.setOnPreferenceChangeListener(this);
+        }
+
+        if (mButtonVideoCallForward != null) {
+            mButtonVideoCallForward.setOnPreferenceChangeListener(this);
+        }
+
+        if (mButtonVideoCallPictureSelect != null) {
+            mButtonVideoCallPictureSelect.setOnPreferenceChangeListener(this);
+        }
+
+        if (mButtonProximity != null) {
+            mButtonProximity.setOnPreferenceChangeListener(this);
+        }
+
+        if (mVibrateAfterConnected != null) {
+            mVibrateAfterConnected.setOnPreferenceChangeListener(this);
+        }
+
+        if (mShowDurationCheckBox != null) {
+            mShowDurationCheckBox.setOnPreferenceChangeListener(this);
         }
 
         if (mButtonAutoRetry != null) {
@@ -1648,6 +1791,50 @@ public class CallFeaturesSetting extends PreferenceActivity
             }
         }
 
+        mEnableForwardLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_FORWARD_LOOKUP);
+        mEnablePeopleLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_PEOPLE_LOOKUP);
+        mEnableReverseLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_REVERSE_LOOKUP);
+
+        mEnableForwardLookup.setOnPreferenceChangeListener(this);
+        mEnablePeopleLookup.setOnPreferenceChangeListener(this);
+        mEnableReverseLookup.setOnPreferenceChangeListener(this);
+
+        restoreLookupProviderSwitches();
+
+        mChooseForwardLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_FORWARD_LOOKUP_PROVIDER);
+        mChoosePeopleLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_PEOPLE_LOOKUP_PROVIDER);
+        mChooseReverseLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_REVERSE_LOOKUP_PROVIDER);
+
+        mChooseForwardLookupProvider.setOnPreferenceChangeListener(this);
+        mChoosePeopleLookupProvider.setOnPreferenceChangeListener(this);
+        mChooseReverseLookupProvider.setOnPreferenceChangeListener(this);
+
+        if (PhoneUtils.isPackageInstalled(this, getString(R.string.cyngn_reverse_lookup_provider_package))) {
+            List<String> reverseLookupProviders = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.reverse_lookup_provider_names)));
+            List<String> reverseLookupProvidersValues = new LinkedList<String>(Arrays.asList(getResources().getStringArray(R.array.reverse_lookup_providers)));
+
+            reverseLookupProviders.add(getString(R.string.cyngn_reverse_lookup_provider_name));
+            reverseLookupProvidersValues.add(getString(R.string.cyngn_reverse_lookup_provider_value));
+
+            String[] reverseLookupArray = new String[reverseLookupProviders.size()];
+            String[] reverseLookupNameArray = new String[reverseLookupProvidersValues.size()];
+            reverseLookupArray = reverseLookupProviders.toArray(reverseLookupArray);
+            reverseLookupNameArray = reverseLookupProvidersValues.toArray(reverseLookupNameArray);
+            mChooseReverseLookupProvider.setEntries(reverseLookupArray);
+            mChooseReverseLookupProvider.setEntryValues(reverseLookupNameArray);
+        } else {
+            mChooseReverseLookupProvider.setEntries(getResources().getStringArray(R.array.reverse_lookup_provider_names));
+            mChooseReverseLookupProvider.setEntryValues(getResources().getStringArray(R.array.reverse_lookup_providers));
+        }
+
+        restoreLookupProviders();
+
         // check the intent that started this activity and pop up the voicemail
         // dialog if we've been asked to.
         // If we have at least one non default VM provider registered then bring up
@@ -1669,6 +1856,9 @@ public class CallFeaturesSetting extends PreferenceActivity
 
         updateVoiceNumberField();
         mVMProviderSettingsForced = false;
+
+        // Blacklist screen - Needed for setting summary
+        mButtonBlacklist = (PreferenceScreen) prefSet.findPreference(BUTTON_BLACKLIST);
 
         PreferenceScreen selectSub = (PreferenceScreen) findPreference(BUTTON_SELECT_SUB_KEY);
         if (selectSub != null) {
@@ -1712,6 +1902,38 @@ public class CallFeaturesSetting extends PreferenceActivity
             updatePreferredTtyModeSummary(settingsTtyMode);
         }
 
+        if (mButtonProximity != null) {
+            boolean checked = Settings.System.getInt(getContentResolver(),
+                    Constants.SETTINGS_PROXIMITY_SENSOR, 1) == 1;
+            mButtonProximity.setChecked(checked);
+            mButtonProximity.setSummary(checked ? R.string.proximity_on_summary
+                    : R.string.proximity_off_summary);
+        }
+
+        if (mVibrateAfterConnected != null) {
+            boolean checked = Settings.System.getInt(getContentResolver(),
+                    Constants.SETTINGS_VIBRATE_WHEN_ACCEPTED, 1) == 1;
+            mVibrateAfterConnected.setChecked(checked);
+        }
+
+        if (mShowDurationCheckBox != null) {
+            boolean checked = Settings.System.getInt(getContentResolver(),
+                    Constants.SETTINGS_SHOW_CALL_DURATION, 1) == 1;
+            mShowDurationCheckBox.setChecked(checked);
+            mShowDurationCheckBox.setSummary(checked ? R.string.duration_enable_summary
+                    : R.string.duration_disable_summary);
+        }
+
+        if (mIPPrefixPreference != null) {
+            String ip_prefix = Settings.System.getString(getContentResolver(),
+                    Constants.SETTINGS_IP_PREFIX);
+            if (TextUtils.isEmpty(ip_prefix)) {
+                mIPPrefixPreference.setSummary(R.string.ipcall_sub_summery);
+            } else {
+                mIPPrefixPreference.setSummary(ip_prefix);
+            }
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                 mPhone.getContext());
         if (migrateVoicemailVibrationSettingsIfNeeded(prefs, mPhone.getPhoneId())
@@ -1720,8 +1942,22 @@ public class CallFeaturesSetting extends PreferenceActivity
                     BUTTON_VOICEMAIL_NOTIFICATION_VIBRATE_KEY + mPhone.getPhoneId(), false));
         }
 
+        restoreLookupProviderSwitches();
+        restoreLookupProviders();
+
         // Look up the voicemail ringtone name asynchronously and update its preference.
         new Thread(mVoicemailRingtoneLookupRunnable).start();
+        updateBlacklistSummary();
+    }
+
+    private void updateBlacklistSummary() {
+        if (mButtonBlacklist != null) {
+            if (BlacklistUtils.isBlacklistEnabled(this)) {
+                mButtonBlacklist.setSummary(R.string.blacklist_summary);
+            } else {
+                mButtonBlacklist.setSummary(R.string.blacklist_summary_disabled);
+            }
+        }
     }
 
     // Migrate settings from BUTTON_VOICEMAIL_NOTIFICATION_VIBRATE_WHEN_KEY to
@@ -1837,6 +2073,77 @@ public class CallFeaturesSetting extends PreferenceActivity
 
             mVoicemailNotificationVibrate.setEnabled(true);
         }
+    }
+
+    private void saveLookupProviderSwitch(Preference pref, Boolean newValue) {
+        if (DBG) log("saveLookupProviderSwitch()");
+
+        String key;
+
+        if (pref == mEnableForwardLookup) {
+            key = Settings.System.ENABLE_FORWARD_LOOKUP;
+        } else if (pref == mEnablePeopleLookup) {
+            key = Settings.System.ENABLE_PEOPLE_LOOKUP;
+        } else if (pref == mEnableReverseLookup) {
+            key = Settings.System.ENABLE_REVERSE_LOOKUP;
+        } else {
+            return;
+        }
+
+        Settings.System.putInt(getContentResolver(), key, newValue ? 1 : 0);
+    }
+
+    private void restoreLookupProviderSwitches() {
+        if (DBG) log("restoreLookupProviderSwitches()");
+
+        mEnableForwardLookup.setChecked(Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.ENABLE_FORWARD_LOOKUP, 1) != 0);
+        mEnablePeopleLookup.setChecked(Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.ENABLE_PEOPLE_LOOKUP, 1) != 0);
+        mEnableReverseLookup.setChecked(Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.ENABLE_REVERSE_LOOKUP, 1) != 0);
+    }
+
+    private void restoreLookupProvider(ListPreference pref, String key) {
+        String provider = Settings.System.getString(getContentResolver(), key);
+        if (provider == null) {
+            pref.setValueIndex(0);
+            saveLookupProviderSetting(pref, pref.getEntryValues()[0].toString());
+        } else {
+            pref.setValue(provider);
+        }
+    }
+
+    private void restoreLookupProviders() {
+        if (DBG) log("restoreLookupProviders()");
+
+        restoreLookupProvider(mChooseForwardLookupProvider,
+                Settings.System.FORWARD_LOOKUP_PROVIDER);
+        restoreLookupProvider(mChoosePeopleLookupProvider,
+                Settings.System.PEOPLE_LOOKUP_PROVIDER);
+        restoreLookupProvider(mChooseReverseLookupProvider,
+                Settings.System.REVERSE_LOOKUP_PROVIDER);
+    }
+
+    private void saveLookupProviderSetting(Preference pref, String newValue) {
+        if (DBG) log("saveLookupProviderSetting()");
+
+        String key;
+
+        if (pref == mChooseForwardLookupProvider) {
+            key = Settings.System.FORWARD_LOOKUP_PROVIDER;
+        } else if (pref == mChoosePeopleLookupProvider) {
+            key = Settings.System.PEOPLE_LOOKUP_PROVIDER;
+        } else if (pref == mChooseReverseLookupProvider) {
+            key = Settings.System.REVERSE_LOOKUP_PROVIDER;
+        } else {
+            return;
+        }
+
+        Settings.System.putString(getContentResolver(), key, newValue);
     }
 
     /**
@@ -2041,6 +2348,32 @@ public class CallFeaturesSetting extends PreferenceActivity
         if (DBG) log("Loaded settings for " + key + ": " + settings.toString());
         return settings;
     }
+
+    private static Intent getVTCallFBSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.FallBackSetting");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private static Intent getVTCallFWSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.VTCallForwardOptions");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private static Intent getVTCallImageSettingsIntent() {
+        Intent intent = new Intent("com.borqs.videocall.VTImageReplaceSetting");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
+    }
+
+    private boolean isVTSupported() {
+        return SystemProperties.getBoolean("persist.radio.csvt.enabled", false);
+    }
+
 
     /**
      * Deletes settings for the specified provider.

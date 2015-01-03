@@ -1146,17 +1146,13 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     // FIXME: subId version needed
     public boolean enableDataConnectivity() {
-        enforceModifyPermission();
-        long subId = SubscriptionManager.getDefaultDataSubId();
-        getPhone(subId).setDataEnabled(true);
+        setDataEnabled(true);
         return true;
     }
 
     // FIXME: subId version needed
     public boolean disableDataConnectivity() {
-        enforceModifyPermission();
-        long subId = SubscriptionManager.getDefaultDataSubId();
-        getPhone(subId).setDataEnabled(false);
+        setDataEnabled(false);
         return true;
     }
 
@@ -1164,6 +1160,10 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     public boolean isDataConnectivityPossible() {
         long subId = SubscriptionManager.getDefaultDataSubId();
         return getPhone(subId).isDataConnectivityPossible();
+    }
+
+    public boolean isDataPossibleForSubscription(long subId, String apnType) {
+        return getPhone(subId).isOnDemandDataPossible(apnType);
     }
 
     public boolean handlePinMmi(String dialString) {
@@ -1631,9 +1631,26 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
      */
     public String getIccOperatorNumeric(long subId) {
         String iccOperatorNumeric = null;
-        IccRecords iccRecords = getPhone(subId).getIccCard().getIccRecords();
-        if (iccRecords != null) {
-            iccOperatorNumeric = iccRecords.getOperatorNumeric();
+        int netType = getPhone(subId).getServiceState().getRilDataRadioTechnology();
+        int family = UiccController.getFamilyFromRadioTechnology(netType);
+        if (UiccController.APP_FAM_UNKNOWN == family) {
+            int phoneType = getActivePhoneTypeForSubscriber(subId);
+            switch (phoneType) {
+                case TelephonyManager.PHONE_TYPE_GSM:
+                    family = UiccController.APP_FAM_3GPP;
+                    break;
+                case TelephonyManager.PHONE_TYPE_CDMA:
+                    family = UiccController.APP_FAM_3GPP2;
+                    break;
+            }
+        }
+
+        if (UiccController.APP_FAM_UNKNOWN != family) {
+            int slotId = SubscriptionManager.getPhoneId(subId);
+            IccRecords iccRecords = UiccController.getInstance().getIccRecords(slotId, family);
+            if (iccRecords != null) {
+                iccOperatorNumeric = iccRecords.getOperatorNumeric();
+            }
         }
         return iccOperatorNumeric;
     }
@@ -1949,7 +1966,17 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     @Override
     public void setDataEnabled(boolean enable) {
         enforceModifyPermission();
-        mPhone.setDataEnabled(enable);
+        long subId = SubscriptionManager.getDefaultDataSubId();
+        int phoneId = SubscriptionManager.getPhoneId(subId);
+
+        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
+            // If the non-subid API is used, we want to update settings as well
+            // (see DataUsageSummary.java in packages/apps/Settings)
+            android.provider.Settings.Global.putInt(mPhone.getContext().getContentResolver(),
+                    android.provider.Settings.Global.MOBILE_DATA + phoneId, enable ? 1 : 0);
+        }
+
+        getPhone(phoneId).setDataEnabled(enable);
     }
 
     /**
@@ -1982,7 +2009,8 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
             mApp.enforceCallingOrSelfPermission(android.Manifest.permission.MODIFY_PHONE_STATE,
                     null);
         }
-        return mPhone.getDataEnabled();
+        long subId = SubscriptionManager.getDefaultDataSubId();
+        return getPhone(subId).getDataEnabled();
     }
 
     @Override

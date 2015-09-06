@@ -15,6 +15,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.phone.R;
@@ -80,7 +81,14 @@ public class PhoneAccountSettingsFragment extends PreferenceFragment
 
         mDefaultOutgoingAccount = (AccountSelectionPreference)
                 getPreferenceScreen().findPreference(DEFAULT_OUTGOING_ACCOUNT_KEY);
-        if (mTelecomManager.getCallCapablePhoneAccounts().size() > 1) {
+        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
+        int enabledCount = phoneCount;
+        for (int slotId = 0; slotId < phoneCount; slotId++) {
+            if (TelephonyManager.getDefault().getSimState(slotId) != TelephonyManager.SIM_STATE_READY) {
+                enabledCount--;
+            }
+        }
+        if (mTelecomManager.getCallCapablePhoneAccounts().size() > 1 && enabledCount > 1) {
             mDefaultOutgoingAccount.setListener(this);
             updateDefaultOutgoingAccountsModel();
         } else {

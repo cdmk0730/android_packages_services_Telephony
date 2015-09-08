@@ -88,7 +88,7 @@ public class PhoneAccountSettingsFragment extends PreferenceFragment
                 enabledCount--;
             }
         }
-        if (mTelecomManager.getCallCapablePhoneAccounts().size() > 1 && enabledCount > 1) {
+        if (mTelecomManager.getCallCapablePhoneAccounts().size() - phoneCount + enabledCount > 1) {
             mDefaultOutgoingAccount.setListener(this);
             updateDefaultOutgoingAccountsModel();
         } else {

@@ -71,14 +71,14 @@
   <string name="preferred_network_mode_gsm_wcdma_preferred">Suosi GSM/WCDMA</string>
   <string name="number_lookup">Puhelinnumeron haku</string>
   <string name="enable_forward_lookup_title">Paikkahaku</string>
-  <string name="enable_forward_lookup_summary">Näytä lähistöllä olevat paikat kun etsitään puhelimella</string>
+  <string name="enable_forward_lookup_summary">Näytä lähistöllä olevat paikat, kun etsitään numeronvalitsimella</string>
   <string name="enable_people_lookup_title">Henkilöhaku</string>
   <string name="enable_people_lookup_summary">Näytä tuloksia ihmisistä kun haetaan puhelimessa</string>
   <string name="enable_reverse_lookup_title">Käänteinen haku</string>
   <string name="enable_reverse_lookup_summary">Etsi tuntemattomasta numerosta soittavan henkilön tietoja tulevissa puheluissa</string>
   <string name="choose_lookup_providers">Valitse haun tarjoajat</string>
   <string name="choose_forward_lookup_provider_title">Paikkahauntarjoaja</string>
-  <string name="choose_people_lookup_provider_title">Ihmisen haun tarjoaja</string>
+  <string name="choose_people_lookup_provider_title">Henkilön haun tarjoaja</string>
   <string name="choose_reverse_lookup_provider_title">Käänteisen haun tarjoaja</string>
   <string name="sim_name">SIM-nimi</string>
   <string name="sub_no_sim">Ei SIMiä</string>
@@ -225,7 +225,7 @@
   <string name="no_volte">IMS-puhelu ei onnistu</string>
   <string name="no_vt_allowed">Soittaaksesi videopuhelun, ota TTY-tila pois käytöstä</string>
   <string name="ims_edit_title">IMS-tilin tiedot</string>
-  <string name="ims_accounts_title">IMS tili</string>
+  <string name="ims_accounts_title">IMS-tili</string>
   <string name="mo_call_type_title">MO puhelutyyppi</string>
   <string name="ims_service_capability">Ota palvelun kapasiteetti käyttöön/poista käytöstä</string>
   <string name="ims_service_capability_title">IMS-palvelun kapasiteetti</string>
